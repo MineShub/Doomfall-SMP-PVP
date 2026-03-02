@@ -7,55 +7,125 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --neon-green: #55FF55;
             --cyber-gold: #FFD700;
             --discord-blurple: #5865F2;
-            --bg-dark: #0a0a0a;
+            --bg-dark: #050505;
+            --accent-purple: #6e00ff;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
             color: white;
-            overflow: hidden;
+            overflow-x: hidden;
             perspective: 1000px;
         }
 
         .title-font { font-family: 'Syncopate', sans-serif; }
 
+        /* Animated Gradient Background */
         #bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
             z-index: -1;
-            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0a 100%);
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(125deg, #050505, #12002b, #050505, #001220);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
         }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Core */
         .glass {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
 
+        /* Text Glitch Effect */
         .glitch {
             position: relative;
-            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
-                        -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
-                        0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
-            animation: glitch 500ms infinite;
+            display: inline-block;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+        .glitch:hover::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch:hover::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 1s infinite linear alternate-reverse;
         }
 
-        @keyframes glitch {
-            0% { text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.05em -0.025em 0 rgba(0, 255, 0, 0.75), 0.025em 0.05em 0 rgba(0, 255, 0, 0.75); }
-            50% { text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75), 0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75); }
-            100% { text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75), -0.025em -0.025em 0 rgba(0, 255, 0, 0.75), -0.025em -0.05em 0 rgba(0, 0, 255, 0.75); }
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            20% { clip: rect(62px, 9999px, 42px, 0); }
+            40% { clip: rect(12px, 9999px, 65px, 0); }
+            60% { clip: rect(85px, 9999px, 11px, 0); }
+            80% { clip: rect(55px, 9999px, 78px, 0); }
+            100% { clip: rect(2px, 9999px, 33px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(10px, 9999px, 85px, 0); }
+            100% { clip: rect(80px, 9999px, 20px, 0); }
+        }
+
+        /* Card Neon Glow & Hover */
+        .nav-card {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--cyber-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+        .nav-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .nav-card:hover::after {
+            opacity: 1;
         }
 
         .radial-glow {
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2), 0 0 60px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
             animation: pulse-glow 2s infinite ease-in-out;
         }
         @keyframes pulse-glow {
@@ -67,76 +137,99 @@
             background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
         }
 
-        .nav-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .nav-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--cyber-gold);
-        }
+        /* Scrollbar Hide */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="h-screen w-full flex items-center justify-center overflow-hidden">
+<body class="min-h-screen w-full flex items-center justify-center p-4">
 
-    <canvas id="bg-canvas"></canvas>
+    <div id="bg-canvas"></div>
 
     <!-- Sidebar -->
-    <div id="sidebar" class="fixed top-4 left-4 h-[calc(100vh-32px)] w-72 glass rounded-2xl transform -translate-x-[120%] z-50 p-8 flex flex-col items-center shadow-2xl">
-        <div class="relative group">
-            <div class="absolute -inset-1 bg-gradient-to-r from-[#55FF55] to-[#FFD700] rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
-            <div class="relative w-32 h-32 bg-gray-800 rounded-full mb-6 border-2 border-white/10 overflow-hidden">
-                <img id="user-avatar" src="" alt="Avatar" class="w-full h-full object-cover opacity-0 transition-opacity duration-500">
+    <div id="sidebar" class="fixed top-4 left-4 h-[calc(100vh-32px)] w-72 glass rounded-3xl transform -translate-x-[120%] z-50 p-8 flex flex-col items-center shadow-2xl">
+        <div class="relative group mt-4">
+            <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur opacity-20 group-hover:opacity-60 transition duration-1000"></div>
+            <div class="relative w-32 h-32 bg-gray-900 rounded-full mb-6 border border-white/10 overflow-hidden">
+                <img id="user-avatar" src="" alt="" class="w-full h-full object-cover opacity-0 transition-opacity duration-700">
+                <div id="avatar-placeholder" class="absolute inset-0 flex items-center justify-center text-white/20">
+                    <i data-lucide="user" class="w-12 h-12"></i>
+                </div>
             </div>
         </div>
         
-        <h3 id="user-name" class="text-2xl font-black title-font mb-1 tracking-tighter uppercase text-center">LOADING...</h3>
-        <div class="flex items-center gap-2 mb-8">
+        <h3 id="user-name" class="text-xl font-black title-font mb-1 tracking-tighter uppercase text-center mt-2">LOADING...</h3>
+        <div class="flex items-center gap-2 mb-10">
             <span class="w-2 h-2 bg-[#55FF55] rounded-full animate-pulse"></span>
             <span class="text-[#55FF55] text-[10px] font-black uppercase tracking-[0.2em]">Verified Elite</span>
         </div>
         
-        <div class="w-full space-y-4">
-            <button onclick="logout()" class="w-full py-2 text-[10px] uppercase tracking-widest font-bold text-red-500 hover:text-red-400 transition-colors">Logout Session</button>
+        <nav class="w-full space-y-2 flex-grow">
+            <!-- Sidebar Navigation Links could go here -->
+        </nav>
+
+        <div class="w-full pt-6 border-t border-white/5">
+            <button onclick="logout()" class="w-full py-3 rounded-xl hover:bg-red-500/10 transition-all text-[10px] uppercase tracking-widest font-bold text-red-500/80 hover:text-red-500 flex items-center justify-center gap-2">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                Logout Session
+            </button>
         </div>
     </div>
 
-    <!-- Main Landing Screen -->
-    <div id="landing-screen" class="text-center z-10 w-full max-w-6xl px-4">
-        <h1 class="glitch title-font text-5xl md:text-8xl font-black mb-12 tracking-tighter italic">
+    <!-- Main Content Wrapper -->
+    <div id="landing-screen" class="text-center z-10 w-full max-w-7xl mx-auto py-12">
+        <h1 class="glitch title-font text-4xl md:text-7xl lg:text-8xl font-black mb-16 tracking-tighter italic select-none" data-text="MC PVP TOURNAMENT">
             MC <span class="text-[#55FF55]">PVP</span> <span class="text-[#FFD700]">TOURNAMENT</span>
         </h1>
 
-        <div id="action-container" class="flex flex-col items-center justify-center gap-8">
+        <div id="action-container" class="flex flex-col items-center justify-center gap-12">
             <!-- Initial Verify Button -->
-            <button id="verify-btn" onclick="redirectToDiscord()" class="blurple-gradient flex items-center gap-4 text-white font-black py-5 px-10 rounded-full shadow-xl transform transition-all active:scale-95 group">
-                <svg class="w-7 h-7 fill-white" viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.06,72.06,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.71,32.65-1.82,56.6.48,80.21a105.73,105.73,0,0,0,32.28,16.15,77.7,77.7,0,0,0,6.89-11.11,68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.29-16.15C129.5,50.55,124.27,27.05,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
-                <span class="tracking-widest uppercase text-sm">Verify Identity</span>
+            <button id="verify-btn" onclick="redirectToDiscord()" class="blurple-gradient flex items-center gap-5 text-white font-black py-6 px-12 rounded-2xl shadow-2xl transform transition-all hover:scale-105 active:scale-95 group">
+                <i data-lucide="shield-check" class="w-7 h-7"></i>
+                <span class="tracking-[0.3em] uppercase text-sm">Verify via Discord</span>
             </button>
 
             <!-- Verified Menu (Hidden Initially) -->
-            <div id="verified-content" class="hidden w-full">
-                <button id="start-btn" class="radial-glow bg-[#FFD700] text-black font-black py-6 px-20 text-4xl rounded-full shadow-2xl transition-all hover:scale-110 active:scale-90 title-font mb-16 inline-block">
+            <div id="verified-content" class="hidden w-full flex flex-col items-center">
+                <button id="start-btn" class="radial-glow bg-[#FFD700] text-black font-black py-6 px-24 text-4xl rounded-2xl shadow-2xl transition-all hover:scale-110 active:scale-90 title-font mb-20 inline-block uppercase italic tracking-tighter">
                     START
                 </button>
 
                 <!-- 4-Card Menu -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-5xl mx-auto opacity-0 translate-y-10" id="menu-cards">
-                    <div class="nav-card glass p-6 rounded-2xl border border-white/5 cursor-pointer">
-                        <div class="text-[#FFD700] mb-4 text-3xl font-bold">01</div>
-                        <h4 class="title-font text-xs tracking-widest font-bold">STANDINGS</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-4 opacity-0 translate-y-10" id="menu-cards">
+                    <div class="nav-card glass p-8 rounded-3xl cursor-pointer group">
+                        <div class="text-[#FFD700] mb-6 flex justify-between items-start">
+                            <i data-lucide="trophy" class="w-10 h-10 group-hover:animate-bounce"></i>
+                            <span class="text-xs font-black opacity-20">01</span>
+                        </div>
+                        <h4 class="title-font text-sm tracking-[0.2em] font-bold text-white/90">STANDINGS</h4>
+                        <p class="text-[10px] text-white/40 mt-2 uppercase tracking-widest">Global Rank & Stats</p>
                     </div>
-                    <div class="nav-card glass p-6 rounded-2xl border border-white/5 cursor-pointer">
-                        <div class="text-[#FFD700] mb-4 text-3xl font-bold">02</div>
-                        <h4 class="title-font text-xs tracking-widest font-bold">MATCHES</h4>
+
+                    <div class="nav-card glass p-8 rounded-3xl cursor-pointer group">
+                        <div class="text-[#FFD700] mb-6 flex justify-between items-start">
+                            <i data-lucide="swords" class="w-10 h-10 group-hover:rotate-12 transition-transform"></i>
+                            <span class="text-xs font-black opacity-20">02</span>
+                        </div>
+                        <h4 class="title-font text-sm tracking-[0.2em] font-bold text-white/90">MATCHES</h4>
+                        <p class="text-[10px] text-white/40 mt-2 uppercase tracking-widest">Live & Upcoming</p>
                     </div>
-                    <div class="nav-card glass p-6 rounded-2xl border border-white/5 cursor-pointer">
-                        <div class="text-[#FFD700] mb-4 text-3xl font-bold">03</div>
-                        <h4 class="title-font text-xs tracking-widest font-bold">ADMIN</h4>
+
+                    <div class="nav-card glass p-8 rounded-3xl cursor-pointer group">
+                        <div class="text-[#FFD700] mb-6 flex justify-between items-start">
+                            <i data-lucide="shield" class="w-10 h-10 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-xs font-black opacity-20">03</span>
+                        </div>
+                        <h4 class="title-font text-sm tracking-[0.2em] font-bold text-white/90">ADMIN</h4>
+                        <p class="text-[10px] text-white/40 mt-2 uppercase tracking-widest">Control Panel</p>
                     </div>
-                    <div class="nav-card glass p-6 rounded-2xl border border-white/5 cursor-pointer">
-                        <div class="text-[#FFD700] mb-4 text-3xl font-bold">04</div>
-                        <h4 class="title-font text-xs tracking-widest font-bold">PLAYOFFS</h4>
+
+                    <div class="nav-card glass p-8 rounded-3xl cursor-pointer group">
+                        <div class="text-[#FFD700] mb-6 flex justify-between items-start">
+                            <i data-lucide="crown" class="w-10 h-10 group-hover:animate-pulse"></i>
+                            <span class="text-xs font-black opacity-20">04</span>
+                        </div>
+                        <h4 class="title-font text-sm tracking-[0.2em] font-bold text-white/90">PLAYOFFS</h4>
+                        <p class="text-[10px] text-white/40 mt-2 uppercase tracking-widest">Final Brackets</p>
                     </div>
                 </div>
             </div>
@@ -144,9 +237,11 @@
     </div>
 
     <script>
-        // --- Discord OAuth2 Configuration ---
+        // --- Discord Configuration ---
         const CLIENT_ID = '1477950063941783604';
-        const REDIRECT_URI = 'http://127.0.0.1:5500/index.html';
+        
+        // Dynamic Redirect URI based on current environment
+        const REDIRECT_URI = window.location.origin + window.location.pathname;
 
         /**
          * Redirect to Discord OAuth2
@@ -154,15 +249,12 @@
         function redirectToDiscord() {
             const scope = encodeURIComponent('identify');
             const encodedRedirect = encodeURIComponent(REDIRECT_URI);
-            // Constructing the exact URL format requested
             const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodedRedirect}&response_type=token&scope=${scope}`;
-            
-            console.log("Redirecting to Discord:", authUrl);
             window.location.href = authUrl;
         }
 
         /**
-         * Extract token from window.location.hash and fetch profile
+         * Handle Hash Token & Session
          */
         async function handleAuth() {
             const hash = window.location.hash;
@@ -170,152 +262,92 @@
             const accessToken = params.get('access_token');
 
             if (accessToken) {
-                // Clear the hash from the URL bar for a cleaner experience
                 window.history.replaceState({}, document.title, window.location.pathname);
-                localStorage.setItem('dc_token', accessToken);
-                await initializeUserSession(accessToken, true);
+                localStorage.setItem('dc_session_token', accessToken);
+                await fetchDiscordProfile(accessToken, true);
             } else {
-                // Check if we already have a token saved
-                const savedToken = localStorage.getItem('dc_token');
-                if (savedToken) {
-                    await initializeUserSession(savedToken, false);
-                }
+                const savedToken = localStorage.getItem('dc_session_token');
+                if (savedToken) await fetchDiscordProfile(savedToken, false);
             }
         }
 
-        /**
-         * Fetch profile from Discord API
-         */
-        async function initializeUserSession(token, isNewLogin) {
+        async function fetchDiscordProfile(token, isNewLogin) {
             try {
                 const response = await fetch('https://discord.com/api/v10/users/@me', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (!response.ok) {
-                    throw new Error('Discord Session Expired or Invalid');
-                }
+                if (!response.ok) throw new Error('Expired');
 
-                const userData = await response.json();
-                updateUserUI(userData, isNewLogin);
+                const user = await response.json();
+                renderDashboard(user, isNewLogin);
             } catch (err) {
-                console.error("Auth initialization failed:", err);
-                localStorage.removeItem('dc_token');
+                console.error("Auth Error:", err);
+                localStorage.removeItem('dc_session_token');
             }
         }
 
-        /**
-         * Update the UI with Discord profile data and trigger animations
-         */
-        function updateUserUI(user, animate) {
-            // Update Sidebar Info
-            const avatarEl = document.getElementById('user-avatar');
-            document.getElementById('user-name').innerText = user.username;
-            
-            if (user.avatar) {
-                avatarEl.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`;
-            } else {
-                // Default avatar logic for users without a custom one
-                const defaultIdx = user.discriminator === '0' ? (user.id >> 22) % 6 : user.discriminator % 5;
-                avatarEl.src = `https://cdn.discordapp.com/embed/avatars/${defaultIdx}.png`;
-            }
-            avatarEl.style.opacity = '1';
+        function renderDashboard(user, animate) {
+            // Update Sidebar
+            const avatarImg = document.getElementById('user-avatar');
+            const nameTxt = document.getElementById('user-name');
+            const placeholder = document.getElementById('avatar-placeholder');
 
-            // Swap Verify button for the Verified Menu
+            nameTxt.innerText = user.username;
+            if (user.avatar) {
+                avatarImg.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`;
+                avatarImg.onload = () => {
+                    avatarImg.style.opacity = '1';
+                    placeholder.style.opacity = '0';
+                };
+            }
+
+            // UI State Change
             document.getElementById('verify-btn').classList.add('hidden');
             document.getElementById('verified-content').classList.remove('hidden');
 
+            // Animations
             if (animate) {
-                // Sidebar Slide In animation
+                // Spring effect slide-in
                 anime({
                     targets: '#sidebar',
                     translateX: ['-120%', 0],
-                    duration: 1200,
-                    easing: 'easeOutExpo'
-                });
-
-                // Start Button scale animation
-                anime({
-                    targets: '#start-btn',
-                    scale: [0, 1],
-                    opacity: [0, 1],
-                    duration: 800,
+                    duration: 1500,
                     easing: 'easeOutElastic(1, .6)'
                 });
 
-                // Menu Cards staggered entrance
                 anime({
-                    targets: '#menu-cards',
-                    translateY: [40, 0],
+                    targets: '#start-btn',
+                    scale: [0.5, 1],
                     opacity: [0, 1],
-                    delay: 400,
                     duration: 1000,
                     easing: 'easeOutExpo'
                 });
+
+                anime({
+                    targets: '#menu-cards',
+                    translateY: [60, 0],
+                    opacity: [0, 1],
+                    delay: 300,
+                    duration: 1200,
+                    easing: 'easeOutExpo'
+                });
             } else {
-                // Instantly set states if no animation needed
                 document.getElementById('sidebar').style.transform = 'translateX(0)';
                 document.getElementById('menu-cards').style.opacity = '1';
                 document.getElementById('menu-cards').style.transform = 'translateY(0)';
             }
         }
 
-        /**
-         * Clear session and return to initial state
-         */
         function logout() {
-            localStorage.removeItem('dc_token');
-            window.location.href = REDIRECT_URI;
+            localStorage.removeItem('dc_session_token');
+            window.location.reload();
         }
 
-        // --- Visual Background Effects (Dynamic Canvas) ---
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 1.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.speedY = (Math.random() - 0.5) * 0.5;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-            }
-            draw() {
-                ctx.fillStyle = Math.random() > 0.5 ? '#55FF55' : '#FFD700';
-                ctx.globalAlpha = 0.3;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-
-        // Initial setup
-        initCanvas();
-        for (let i = 0; i < 100; i++) particles.push(new Particle());
-        animate();
-        window.addEventListener('resize', initCanvas);
-
-        // Check for authentication on page load
+        // Check auth on load
         window.addEventListener('load', handleAuth);
     </script>
 </body>
